@@ -15,14 +15,14 @@ async function getAllUsers() {
 //this function uses destructuring for the rows const (similar to object.rows)
 async function createUser({ username, password, name, location }) {
   try {
-    const { rows } = await client.query(`
+    const { rows: [user] } = await client.query(`
       INSERT INTO users(username, password, name, location) 
       VALUES($1, $2, $3, $4) 
       ON CONFLICT (username) DO NOTHING 
       RETURNING *;
     `, [username, password, name, location]);
-    console.log(rows)
-    return rows;
+    console.log("This is user", user)
+    return user;
   } catch (error) {
     throw error;
   }
@@ -30,24 +30,26 @@ async function createUser({ username, password, name, location }) {
 
 async function updateUser(id, fields = {}) {
   // build the set string
+  // console.log("I am fields", fields)
   const setString = Object.keys(fields).map(
     (key, index) => `"${ key }"=$${ index + 1 }`
-  ).join(', ');
-
+    ).join(', ');
+    // console.log("I am set String", setString)
     // return early if this is called without fields
     if (setString.length === 0) {
       return;
     }
-
+    // console.log("I am the key's value", Object.values(fields))
     try {
-      const result = await client.query(`
+      const {rows: [user] } = await client.query(`
         UPDATE users
-        SET "name"='new name', "location"='new location'
+        SET ${ setString }
         WHERE id=${ id }
         RETURNING *;
       `, Object.values(fields));
   
-      return result;
+      // console.log("this is our user log",user)
+      return user;
     } catch (error) {
       throw error;
     }
@@ -57,7 +59,8 @@ async function updateUser(id, fields = {}) {
   module.exports = {
     client,
     getAllUsers,
-    createUser
+    createUser,
+    updateUser
   }
 
 

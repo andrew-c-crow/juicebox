@@ -1,7 +1,8 @@
 // grab our client with destructuring from the export in index.js
 const { client,
 getAllUsers,
-createUser
+createUser,
+updateUser
  } = require('./index');
 
 // new function, should attempt to create a few users
@@ -30,6 +31,14 @@ async function testDB() {
     // queries are promises, so we can await them
     const users = await getAllUsers();
     console.log("getAllUsers:", users);
+
+    console.log("Calling updateUser on users[0]")
+    const updateUserResult = await updateUser(users[0].id, {
+      name: "Newname Sogood",
+      location: "Lesterville, KY"
+    });
+    console.log("Result:", updateUserResult);
+
     // for now, logging is a fine way to see what's up
     console.log("Finished database tests!");
   } catch (error) {
