@@ -13,7 +13,11 @@ async function getAllUsers() {
 }
 
 //this function uses destructuring for the rows const (similar to object.rows)
-async function createUser({ username, password, name, location }) {
+async function createUser({ 
+  username, 
+  password, 
+  name, 
+  location }) {
   try {
     const { rows: [user] } = await client.query(`
       INSERT INTO users(username, password, name, location) 
@@ -34,7 +38,7 @@ async function updateUser(id, fields = {}) {
   const setString = Object.keys(fields).map(
     (key, index) => `"${ key }"=$${ index + 1 }`
     ).join(', ');
-    // console.log("I am set String", setString)
+    console.log("I am set String", setString)
     // return early if this is called without fields
     if (setString.length === 0) {
       return;
@@ -53,14 +57,103 @@ async function updateUser(id, fields = {}) {
     } catch (error) {
       throw error;
     }
-}
+  }
+
+  async function getAllPosts() {
+    try {
+      const { rows } = client.query(`
+      SELECT id, authorId, title, content, active
+      FROM posts;
+      `)
   
+    } catch (error) {
+      throw error;
+    }
+  }
+  
+async function createPost({
+  authorId,
+  title,
+  content
+}) {
+  try {
+    const { rows } = await client.query(`
+    INSERT INTO posts (authorId, title, content),
+    VALUES($1, $2, $3)
+    RETURNING *;
+    `, [authorId, title, content]);
+    return result
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function updatePost(id, {
+  title,
+  content,
+  active
+}) {
+  try {
+    const { rows } = await client.query(`
+    UPDATE posts
+    SET
+    WHERE id=${id}
+    RETURNING *;
+    `, [])
+
+  } catch (error) {
+    throw error;
+  }
+}
+
+  
+async function getPostsByUser(userId) {
+  try {
+    const { rows } = await client.query(`
+      SELECT * FROM posts
+      WHERE "authorId"=${ userId };
+    `);
+
+    return rows;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function getUserById (userId) {
+  
+  try {
+    const { rows: [user] } = await client.query(`
+    SELECT * FROM users
+    WHERE "id"= ${userId}
+    `)
+
+    if (!user) {
+      return null;
+    }
+    delete user.password
+    user.posts = await getPostsByUser(userId)
+    return user
+
+  } catch (error) {
+    throw error;
+  }
+
+
+
+}
+
   //and export them
   module.exports = {
     client,
     getAllUsers,
     createUser,
-    updateUser
+    updateUser,
+    createPost,
+    updatePost,
+    getAllPosts,
+    getPostsByUser,
+    getUserById
   }
 
 
