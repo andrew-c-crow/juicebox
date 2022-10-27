@@ -8,7 +8,7 @@ async function getAllUsers() {
     `SELECT id, username
     FROM users;`
   );
-
+  // console.log(rows)
   return rows;
 }
 
@@ -17,11 +17,11 @@ async function createUser({ username, password }) {
   try {
     const result = await client.query(
       `INSERT INTO users(username, password) VALUES ($1, $2)
-      ON CONFLICT (username) DO NOTHING 
-      RETURNING *;
+      ON CONFLICT (username) DO NOTHING RETURNING *;
       `, [ username, password ]);
-      
-      return result
+      const rows = result.rows
+      console.log(rows)
+      return rows
     } catch (error) {
       throw error;
     }
@@ -33,3 +33,5 @@ async function createUser({ username, password }) {
     getAllUsers,
     createUser
   }
+
+
