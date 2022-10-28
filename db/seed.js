@@ -89,6 +89,8 @@ async function dropTables() {
   try {
     console.log("Starting to drop tables...");
     await client.query(`
+      DROP TABLE IF EXISTS post_tags;
+      DROP TABLE IF EXISTS tags;
       DROP TABLE IF EXISTS posts;
       DROP TABLE IF EXISTS users;
 
@@ -125,6 +127,21 @@ async function createTables() {
     content TEXT NOT NULL,
     active BOOLEAN DEFAULT true
       );
+    `)
+
+    await client.query (`
+    CREATE TABLE tags (
+      id SERIAL PRIMARY KEY,
+      name VARCHAR(255) UNIQUE NOT NULL
+    );
+    `)
+
+    await client.post_tags (`
+    CREATE TABLE post_tags (
+      "postId" INTEGER REFERENCES posts(id),
+      "tagId" INTEGER REFERENCES tags(id),
+      UNIQUE ("postId", "tagId")
+    )
     `)
 
 
