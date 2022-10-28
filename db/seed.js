@@ -136,12 +136,12 @@ async function createTables() {
     );
     `)
 
-    await client.post_tags (`
+    await client.query (`
     CREATE TABLE post_tags (
       "postId" INTEGER REFERENCES posts(id),
       "tagId" INTEGER REFERENCES tags(id),
       UNIQUE ("postId", "tagId")
-    )
+    );
     `)
 
 

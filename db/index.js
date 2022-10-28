@@ -152,18 +152,32 @@ async function getUserById (userId) {
     const insertValues = tagList.map(
       (_, index) => `$${index + 1}`).join('), (');
     // then we can use: (${ insertValues }) in our string template
-  
+      console.log("index values for tags", insertValues)
     // need something like $1, $2, $3
     const selectValues = tagList.map(
       (_, index) => `$${index + 1}`).join(', ');
     // then we can use (${ selectValues }) in our string template
   
     try {
+         await client.query (`
+        INSERT INTO tags(name)
+        VALUES (${insertValues})
+        ON CONFLICT (name) DO NOTHING;
+        `, tagList)
+
+        const {rows} = await client.query (`
+        SELECT * FROM tags
+        WHERE name
+        IN (${selectValues})
+        `, tagList)
+
+      return rows
       // insert the tags, doing nothing on conflict
       // returning nothing, we'll query after
   
       // select all tags where the name is in our taglist
       // return the rows from the query
+
     } catch (error) {
       throw error;
     }
@@ -171,6 +185,7 @@ async function getUserById (userId) {
 
 
 }
+
 
   //and export them
   module.exports = {
