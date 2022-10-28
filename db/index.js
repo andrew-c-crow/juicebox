@@ -96,7 +96,7 @@ async function updatePost(id, {
   try {
     const { rows } = await client.query(`
     UPDATE posts
-    SET
+    SET {}
     WHERE id=${id}
     RETURNING *;
     `, [])

@@ -2,7 +2,12 @@
 const { client,
 getAllUsers,
 createUser,
-updateUser
+updateUser,
+createPost,
+updatePost,
+getAllPosts,
+getPostsByUser,
+getUserById
  } = require('./index');
 
 // new function, should attempt to create a few users
