@@ -38,7 +38,7 @@ async function createInitialPosts() {
       title: "First Post",
       content: "This is my first post. I hope I love writing blogs as much as I love writing them."
     });
-console.log("checking post", checkPost)
+// console.log("checking post", checkPost)
     // a couple more
   } catch (error) {
     throw error;
