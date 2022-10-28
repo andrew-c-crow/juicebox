@@ -90,10 +90,12 @@ async function createPost({
 }
 
 async function updatePost(id, fields = {}) {
+  
+  
   try {
     const { rows } = await client.query(`
     UPDATE posts
-    SET (title, content)
+    SET 
     WHERE id=${id}
     RETURNING *;
     `, Object.values(fields))
