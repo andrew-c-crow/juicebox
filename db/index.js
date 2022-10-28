@@ -34,7 +34,7 @@ async function createUser({
 
 async function updateUser(id, fields = {}) {
   // build the set string
-  // console.log("I am fields", fields)
+  console.log("I am fields", fields)
   const setString = Object.keys(fields).map(
     (key, index) => `"${ key }"=$${ index + 1 }`
     ).join(', ');
@@ -43,7 +43,7 @@ async function updateUser(id, fields = {}) {
     if (setString.length === 0) {
       return;
     }
-    // console.log("I am the key's value", Object.values(fields))
+    console.log("I am the key's value", Object.values(fields))
     try {
       const {rows: [user] } = await client.query(`
         UPDATE users
@@ -52,7 +52,7 @@ async function updateUser(id, fields = {}) {
         RETURNING *;
       `, Object.values(fields));
   
-      // console.log("this is our user log",user)
+      console.log("this is our user log",user)
       return user;
     } catch (error) {
       throw error;
