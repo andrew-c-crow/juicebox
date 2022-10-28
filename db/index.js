@@ -61,11 +61,12 @@ async function updateUser(id, fields = {}) {
 
   async function getAllPosts() {
     try {
-      const { rows } = client.query(`
-      SELECT id, authorId, title, content, active
+      const { rows } = await client.query(`
+      SELECT id
       FROM posts;
       `)
-  
+      console.log("!!!!", rows)
+      return rows
     } catch (error) {
       throw error;
     }
@@ -78,29 +79,25 @@ async function createPost({
 }) {
   try {
     const { rows } = await client.query(`
-    INSERT INTO posts (authorId, title, content),
+    INSERT INTO posts ("authorId", title, content)
     VALUES($1, $2, $3)
     RETURNING *;
     `, [authorId, title, content]);
-    return result
+    return rows
   } catch (error) {
     throw error;
   }
 }
 
-async function updatePost(id, {
-  title,
-  content,
-  active
-}) {
+async function updatePost(id, fields = {}) {
   try {
     const { rows } = await client.query(`
     UPDATE posts
-    SET {}
+    SET (title, content)
     WHERE id=${id}
     RETURNING *;
-    `, [])
-
+    `, Object.values(fields))
+// console.log("looking at problem", rows)
   } catch (error) {
     throw error;
   }
