@@ -361,6 +361,7 @@ async function getPostsByTagName(tagName) {
   }
 } 
 
+
 async function getUserByUsername(username) {
   try {
     const { rows: [user] } = await client.query(`
@@ -368,7 +369,7 @@ async function getUserByUsername(username) {
       FROM users
       WHERE username=$1;
     `, [username]);
-
+    // console.log("our user data here!!!", user)
     return user;
   } catch (error) {
     throw error;
