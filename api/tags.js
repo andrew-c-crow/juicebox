@@ -37,6 +37,7 @@ tagsRouter.get('/:tagName/posts', async (req, res, next) => {
     res.send({ post: posts})
   } catch ({ name, message }) {
     // forward the name and message to the error handler
+    next({ name, message });
   }
 });
 
